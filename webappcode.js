@@ -65,6 +65,32 @@ app.get("/api/shop-types", async (req, res) => {
   }
 });
 
+// API endpoint to get last database update
+app.get("/api/last-update", async (req, res) => {
+  try {
+    const pool = new sql.ConnectionPool(dbConfig);
+    await pool.connect();
+    
+    // Try to get the latest update from the database
+    // First, check if there's an UpdatedAt column, otherwise use GETDATE()
+    const result = await pool.request()
+      .query(`
+        SELECT TOP 1 
+          MAX(CAST(ISNULL([UpdatedAt], GETDATE()) AS DATETIME)) as lastUpdate
+        FROM Shops
+      `);
+    
+    await pool.close();
+    
+    const lastUpdate = result.recordset[0]?.lastUpdate || new Date();
+    res.json({ lastUpdate: lastUpdate });
+  } catch (err) {
+    console.error("Database error:", err);
+    // Return current date if query fails
+    res.json({ lastUpdate: new Date() });
+  }
+});
+
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
