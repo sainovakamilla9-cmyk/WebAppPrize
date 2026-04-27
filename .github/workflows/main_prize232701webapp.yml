@@ -62,4 +62,5 @@ jobs:
           app-name: 'prize232701webapp'
           slot-name: 'Production'
           package: .
+          startup-command: 'npm start'
           
