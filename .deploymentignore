@@ -1,0 +1,14 @@
+.git
+.gitignore
+.github
+.vscode
+README.md
+AZURE_DEPLOYMENT.md
+node_modules
+npm-debug.log
+.env.local
+.DS_Store
+Thumbs.db
+.idea
+*.swp
+*.swo
