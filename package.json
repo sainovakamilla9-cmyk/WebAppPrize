@@ -1,6 +1,17 @@
 {
+  "name": "webapp-prize",
+  "version": "1.0.0",
+  "description": "WebApp for GIF Project Prize with Azure SQL integration",
+  "main": "webappcode.js",
+  "scripts": {
+    "start": "node webappcode.js",
+    "dev": "node webappcode.js"
+  },
   "dependencies": {
     "express": "^5.2.1",
     "mssql": "^12.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
