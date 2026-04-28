@@ -278,6 +278,30 @@
     body {
       padding-bottom: 60px;
     }
+
+    #map-container {
+      display: none;
+      margin-top: 30px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      max-width: 100%;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #map-container.show {
+      display: block;
+    }
+
+    #map-container iframe {
+      width: 100%;
+      height: 720px;
+      min-height: 520px;
+      border: none;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -319,6 +343,10 @@
     <div class="result" id="result">
       <div class="result-text" id="resultText"></div>
     </div>
+
+    <div id="map-container">
+      <iframe title="GIF_prize_projekt" width="800" height="836" src="https://app.powerbi.com/view?r=eyJrIjoiN2NiZDIwMzQtYjY2Yi00Y2FlLTg2NTgtNzE0MzRmMjBhNjJhIiwidCI6ImM2M2NlNzI5LWNhMTctNGU1Mi1hYTJkLTk2Yjc5NDg5YTU0MiIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
+    </div>
   </div>
   
   <script>
@@ -327,6 +355,9 @@
     let selectedShopName = "";
     let allShops = [];
     let shopTypes = [];
+    
+    // Base URL for PowerBI map
+    const baseMapUrl = "https://app.powerbi.com/view?r=eyJrIjoiN2NiZDIwMzQtYjY2Yi00Y2FlLTg2NTgtNzE0MzRmMjBhNjJhIiwidCI6ImM2M2NlNzI5LWNhMTctNGU1Mi1hYTJkLTk2Yjc5NDg5YTU0MiIsImMiOjh9";
     
     const shopTypeToggle = document.getElementById("shopTypeToggle");
     const shopTypeMenu = document.getElementById("shopTypeMenu");
@@ -461,6 +492,14 @@
       shopNameToggle.innerHTML = `<span class="dropdown-placeholder">-- Vyberte obchod --</span>`;
       
       errorDiv.classList.remove("show");
+      
+      // Show/hide map container based on selected type
+      const mapContainer = document.getElementById("map-container");
+      if (type === "online+offline") {
+        mapContainer.classList.add("show");
+      } else {
+        mapContainer.classList.remove("show");
+      }
     }
     
     // Filter shops by type
@@ -521,6 +560,17 @@
       
       resultText.textContent = `Vybrali jste obchod: ${selectedShopName} (${selectedShopType})`;
       resultDiv.classList.add("show");
+      
+      // Update iframe map URL if online+offline is selected
+      if (selectedShopType === "online+offline") {
+        const mapContainer = document.getElementById("map-container");
+        const iframe = mapContainer.querySelector("iframe");
+        
+        // Create filter parameter for the selected shop
+        const filterValue = `Shops/ShopName eq '${selectedShopName}'`;
+        const filterParam = `&$filter=${encodeURIComponent(filterValue)}`;
+        iframe.src = baseMapUrl + filterParam;
+      }
     });
     
     // Handle form reset
@@ -544,6 +594,12 @@
       
       closeDropdown(shopTypeToggle, shopTypeMenu);
       closeDropdown(shopNameToggle, shopNameMenu);
+      
+      // Hide map container and reset its URL
+      const mapContainer = document.getElementById("map-container");
+      const iframe = mapContainer.querySelector("iframe");
+      iframe.src = baseMapUrl;
+      mapContainer.classList.remove("show");
     });
 
     // Format date to Czech format: DD.MM.YYYY HH:mm
